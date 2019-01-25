@@ -1,0 +1,48 @@
+version: 2
+
+jobs:
+  commit:
+    docker:
+      - image: wades/boostid:latest
+    working_directory: /app
+    steps:
+      - checkout
+      - run:
+          name: test
+          command: npm test
+      # - add_ssh_keys:
+      #   fingerprints:
+      #     - "2d:2a:a9:1a:d6:bb:cf:47:a2:7a:3d:cd:43:8b:c6:e6"
+      # - deploy:
+      #     command: |
+      #       git remote set origin ssh://codeserver.dev.${PANTHEON_SITE_ID}@codeserver.dev.${PANTHEON_SITE_ID}.drush.in:2222/~/repository.git
+      #       git push
+          
+  # update_from_upstream: # TODO
+  #   docker:
+  #     - image: wades/boostid:latest
+  #   working_directory: /app
+  #   steps:
+  #     - checkout
+  #     - run:
+  #         name: test
+  #         command: npm test
+
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - commit
+  # nightly:
+  #   jobs:
+  #     - update_from_upstream
+  #   triggers:
+  #     - schedule:
+  #         cron: "0 0 * * *" # Every day at 12:00am UTC
+  #         filters:
+  #           branches:
+  #             only:
+  #               - updates
+  #               # - master
+  #               # - beta
