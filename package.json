@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "boostid": "git@github.com:wyattades/boostid.git"
+  },
+  "scripts": {
+    "test": "boostid test"
+  }
+}
