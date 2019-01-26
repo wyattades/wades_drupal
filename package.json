@@ -4,5 +4,6 @@
   },
   "dependencies": {
     "boostid": "git+ssh://git@github.com/wyattades/boostid.git"
-  }
+  },
+  "private": true
 }

@@ -17,15 +17,12 @@ jobs:
           keys:
             # when lock file changes, use increasingly general patterns to restore cache
             - node-v1-{{ .Branch }}-{{ checksum "package-lock.json" }}
-            - node-v1-{{ .Branch }}-
-            - node-v1-
+            # We can use these once boostid uses git tags or is an npm module
+            # - node-v1-{{ .Branch }}-
+            # - node-v1-
       - run:
           name: install-packages
           command: npm install
-      - run:
-          name: debug
-          command: |
-            cat /home/boostid/app/node_modules/boostid/lib/test.js
       - save_cache:
           key: node-v1-{{ .Branch }}-{{ checksum "package-lock.json" }}
           paths:
