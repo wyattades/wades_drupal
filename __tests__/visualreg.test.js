@@ -1,5 +1,6 @@
 const prebuilt = require('boostid/tests');
 
+
 describe('Visual regression on live', () => {
   prebuilt.visualRegOnLive();
 });
