@@ -1,9 +1,10 @@
 {
   "scripts": {
-    "test": "boostid test"
+    "test": "boostid test",
+    "test:dev-boostid": "boostid test --dev-boostid ~/Github/boostid"
   },
   "dependencies": {
-    "boostid": "git+ssh://git@github.com/wyattades/boostid.git"
+    "boostid": "https://github.com/wyattades/boostid.git"
   },
   "private": true
 }

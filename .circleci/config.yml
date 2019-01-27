@@ -4,15 +4,14 @@ jobs:
   commit:
     docker:
       - image: wades/boostid:0.0.1
-    working_directory: /home/boostid/app
-    user: boostid
+    working_directory: /app
     steps:
       - checkout
-      - run: 
-          name: env-variables
-          command: |
-            # Skip downloading chromium
-            echo 'export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true' >> $BASH_ENV
+      # - run: 
+      #     name: env-variables
+      #     command: |
+      #       # Skip downloading chromium
+      #       echo 'export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true' >> $BASH_ENV
       - restore_cache:
           keys:
             # when lock file changes, use increasingly general patterns to restore cache
@@ -26,10 +25,10 @@ jobs:
       - save_cache:
           key: node-v1-{{ .Branch }}-{{ checksum "package-lock.json" }}
           paths:
-            - /home/boostid/app/node_modules
+            - /app/node_modules
       - run:
           name: test
-          command: npm test
+          command: ./node_modules/boostid/test_lib/run-tests.sh
       # - add_ssh_keys:
       #   fingerprints:
       #     - "2d:2a:a9:1a:d6:bb:cf:47:a2:7a:3d:cd:43:8b:c6:e6"

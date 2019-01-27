@@ -1,5 +1,7 @@
 # Custom
 node_modules/
+.env
+__image_snapshots__
 
 # Ignore paths that contain user-generated content.
 sites/*/files
