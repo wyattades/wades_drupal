@@ -29,6 +29,9 @@ jobs:
       - run:
           name: test
           command: ./node_modules/boostid/test_lib/run-tests.sh
+      - store_artifacts:
+          path: /tmp/visualreg_url
+          destination: visualreg-results-url
       # - add_ssh_keys:
       #   fingerprints:
       #     - "2d:2a:a9:1a:d6:bb:cf:47:a2:7a:3d:cd:43:8b:c6:e6"
