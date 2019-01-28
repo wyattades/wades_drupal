@@ -30,15 +30,15 @@ jobs:
             - /app/node_modules
       - run:
           name: Visual regression tests
-          command: ./node_modules/boostid/test_lib/run-tests.sh
+          command: ./node_modules/boostid/scripts/run-tests.sh
       - store_artifacts:
           path: /tmp/visualreg_url
           destination: visualreg-results-url
 
       # Deploy to pantheon
-      - add_ssh_keys:
-          fingerprints:
-            - "2d:2a:a9:1a:d6:bb:cf:47:a2:7a:3d:cd:43:8b:c6:e6"
+      # - add_ssh_keys:
+      #     fingerprints:
+      #       - "2d:2a:a9:1a:d6:bb:cf:47:a2:7a:3d:cd:43:8b:c6:e6"
       # - deploy:
       #     command: |
       #       git remote set-url origin ssh://codeserver.dev.${PANTHEON_SITE_ID}@codeserver.dev.${PANTHEON_SITE_ID}.drush.in:2222/~/repository.git
@@ -59,8 +59,8 @@ jobs:
           fingerprints:
             - "2d:2a:a9:1a:d6:bb:cf:47:a2:7a:3d:cd:43:8b:c6:e6"
       - run:
-          name: "Pull changes"
-          command: boostid pull-pantheon
+          name: "Push 'updates' branch to github"
+          command: ./node_modules/boostid/scripts/pantheon-to-github.sh
             
 
 workflows:
