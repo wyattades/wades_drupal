@@ -9,6 +9,9 @@ jobs:
   #     - visual_reg
   #     - deploy_to_multidev
   merge_upstream_job:
+    docker:
+      - image: wades/boostid:0.0.1
+    working_directory: /app
     steps:
       - checkout
       - restore_cache:
@@ -34,14 +37,15 @@ jobs:
 
       # Deploy to pantheon
       - add_ssh_keys:
-        fingerprints:
-          - "2d:2a:a9:1a:d6:bb:cf:47:a2:7a:3d:cd:43:8b:c6:e6"
+          fingerprints:
+            - "2d:2a:a9:1a:d6:bb:cf:47:a2:7a:3d:cd:43:8b:c6:e6"
       # - deploy:
       #     command: |
       #       git remote set-url origin ssh://codeserver.dev.${PANTHEON_SITE_ID}@codeserver.dev.${PANTHEON_SITE_ID}.drush.in:2222/~/repository.git
       #       git push
 
   update_from_upstream:
+    machine: true
     steps:
       - run:
           name: Install boostid globally
@@ -52,8 +56,8 @@ jobs:
           name: "Create 'updates' multidev and run upstream updates"
           command: boostid upstream-updates
       - add_ssh_keys:
-        fingerprints:
-          - "2d:2a:a9:1a:d6:bb:cf:47:a2:7a:3d:cd:43:8b:c6:e6"
+          fingerprints:
+            - "2d:2a:a9:1a:d6:bb:cf:47:a2:7a:3d:cd:43:8b:c6:e6"
       - run:
           name: "Pull changes"
           command: boostid pull-pantheon
@@ -65,10 +69,10 @@ workflows:
   merge_upstream:
     jobs:
       - merge_upstream_job:
-        filters:
-          branches:
-            only:
-              - updates
+          filters:
+            branches:
+              only:
+                - updates
 
   nightly:
     jobs:
