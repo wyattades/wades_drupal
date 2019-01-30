@@ -31,9 +31,15 @@ jobs:
           key: node-v1-{{ .Branch }}-{{ checksum "package-lock.json" }}
           paths:
             - /app/node_modules
+      # - run:
+      #     name: Visual regression tests
+      #     command: ./node_modules/boostid/scripts/run-tests.sh
+      # - run:
+      #     name: Exit if passed
+      #     command: circleci-agent step halt
       - run:
-          name: Visual regression tests
-          command: ./node_modules/boostid/scripts/run-tests.sh
+          name: TEMP
+          command: echo "https://rootid-visualreg.s3.amazonaws.com/wades/4b9fe9491444/index.html" > /tmp/visualreg_url
       - store_artifacts:
           path: /tmp/visualreg_url
           destination: visualreg-results-url
@@ -43,8 +49,8 @@ jobs:
       - slack/notify:
           color: "#42e2f4"
           message: "notification test my visualreg tests. triggered by *<https://github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/commit/${CIRCLE_SHA1}|commit ${CIRCLE_SHA1}>* on ${CIRCLE_PROJECT_REPONAME}'s *${CIRCLE_BRANCH}* branch (<https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}|workflow here>). <${VISUALREG_URL}|Results url>"
+          webhook: "${SLACK_WEBHOOK_NOTIFY}"
 
-          
       # Deploy to pantheon
       # - add_ssh_keys:
       #     fingerprints:
