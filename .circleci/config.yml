@@ -44,6 +44,7 @@ jobs:
           color: "#42e2f4"
           message: "notification test my visualreg tests. triggered by *<https://github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/commit/${CIRCLE_SHA1}|commit ${CIRCLE_SHA1}>* on ${CIRCLE_PROJECT_REPONAME}'s *${CIRCLE_BRANCH}* branch (<https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}|workflow here>). <${VISUALREG_URL}|Results url>"
 
+          
       # Deploy to pantheon
       # - add_ssh_keys:
       #     fingerprints:
