@@ -43,12 +43,9 @@ jobs:
       - store_artifacts:
           path: /tmp/visualreg_url
           destination: visualreg-results-url
-      - run:
-          name: Export visual reg results
-          command: export VISUALREG_URL=$(cat /tmp/visualreg_url)
       - slack/notify:
-          color: "#42e2f4"
-          message: "notification test my visualreg tests. triggered by *<https://github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/commit/${CIRCLE_SHA1}|commit ${CIRCLE_SHA1}>* on ${CIRCLE_PROJECT_REPONAME}'s *${CIRCLE_BRANCH}* branch (<https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}|workflow here>). <${VISUALREG_URL}|Results url>"
+          color: "#ff0000"
+          message: "notification test my visualreg tests. triggered by *<https://github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/commit/${CIRCLE_SHA1}|commit ${CIRCLE_SHA1}>* on ${CIRCLE_PROJECT_REPONAME}'s *${CIRCLE_BRANCH}* branch (<https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}|workflow here>). <$(cat /tmp/visualreg_url)|Results url>"
           webhook: "${SLACK_WEBHOOK_NOTIFY}"
 
       # Deploy to pantheon
@@ -94,7 +91,7 @@ workflows:
               only:
                 - updates
 
-                
+
   nightly:
     jobs:
       - update_from_upstream
