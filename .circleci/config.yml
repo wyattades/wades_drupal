@@ -94,6 +94,7 @@ workflows:
               only:
                 - updates
 
+                
   nightly:
     jobs:
       - update_from_upstream
