@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  slack: circleci/slack@1.0.0
+  slack: slack/slack@1.0.1
 
 jobs:
   # commit:
@@ -25,27 +25,22 @@ jobs:
             # - node-v1-{{ .Branch }}-
             # - node-v1-
       - run:
-          name: install-packages
+          name: Install node modules
           command: npm install
       - save_cache:
           key: node-v1-{{ .Branch }}-{{ checksum "package-lock.json" }}
           paths:
             - /app/node_modules
-      # - run:
-      #     name: Visual regression tests
-      #     command: ./node_modules/boostid/scripts/run-tests.sh
-      # - run:
-      #     name: Exit if passed
-      #     command: circleci-agent step halt
       - run:
-          name: TEMP
-          command: echo "https://rootid-visualreg.s3.amazonaws.com/wades/4b9fe9491444/index.html" > /tmp/visualreg_url
+          name: Coverage tests
+          command: ./node_modules/boostid/scripts/run-tests.sh
       - store_artifacts:
-          path: /tmp/visualreg_url
-          destination: visualreg-results-url
+          path: /tmp/boostid_test_results
+          destination: boostid_test_results
       - slack/notify:
-          color: "#ff0000"
-          message: "notification test my visualreg tests. triggered by *<https://github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/commit/${CIRCLE_SHA1}|commit ${CIRCLE_SHA1}>* on ${CIRCLE_PROJECT_REPONAME}'s *${CIRCLE_BRANCH}* branch (<https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}|workflow here>). <$(cat /tmp/visualreg_url)|Results url>"
+          when: on_fail
+          color: "#ed5c5c"
+          message: "Coverage Tests Failed: **${CIRCLE_PROJECT_REPONAME}** (*${CIRCLE_BRANCH}*)\n<$(cat /tmp/boostid_test_results)|Test Results>"
           webhook: "${SLACK_WEBHOOK_NOTIFY}"
 
       # Deploy to pantheon
@@ -101,6 +96,4 @@ workflows:
           filters:
             branches:
               only:
-                # It doesn't matter which branch, we are just running a command
-                # We always know that `master` exists though
-                - fdafsdfds
+                - updates
