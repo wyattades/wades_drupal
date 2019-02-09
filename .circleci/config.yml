@@ -1,19 +1,16 @@
 version: 2.1
 
-jobs:
-  # commit:
-  #   docker:
-  #     - image: wades/boostid:0.0.1
-  #   working_directory: /app
-  #   steps:
-  #     - visual_reg
-  #     - deploy_to_multidev
-  merge_upstream_job:
-    docker:
-      - image: wades/boostid:0.0.1
-    working_directory: /app
+commands:
+  description: "Coverage Tests"
+  coverage_tests:
     steps:
-      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - ${PANTHEON_SSH_FINGERPRINT}
+      - run:
+          name: Checkout Pantheon repository
+          command: |
+            git clone ssh://codeserver.dev.${PANTHEON_SITE_ID}@codeserver.dev.${PANTHEON_SITE_ID}.drush.in:2222/~/repository.git .
       - restore_cache:
           keys:
             # when lock file changes, use increasingly general patterns to restore cache
@@ -22,67 +19,56 @@ jobs:
             # - node-v1-{{ .Branch }}-
             # - node-v1-
       - run:
-          name: install-packages
+          name: Install node modules
           command: npm install
       - save_cache:
           key: node-v1-{{ .Branch }}-{{ checksum "package-lock.json" }}
           paths:
             - /app/node_modules
       - run:
-          name: Visual regression tests
+          name: Coverage tests
           command: ./node_modules/boostid/scripts/run-tests.sh
       - store_artifacts:
-          path: /tmp/visualreg_url
-          destination: visualreg-results-url
+          path: /tmp/boostid_test_results
+          destination: boostid_test_results
 
-      # Deploy to pantheon
-      # - add_ssh_keys:
-      #     fingerprints:
-      #       - "2d:2a:a9:1a:d6:bb:cf:47:a2:7a:3d:cd:43:8b:c6:e6"
-      # - deploy:
-      #     command: |
-      #       git remote set-url origin ssh://codeserver.dev.${PANTHEON_SITE_ID}@codeserver.dev.${PANTHEON_SITE_ID}.drush.in:2222/~/repository.git
-      #       git push
-
-  update_from_upstream:
-    machine: true
+jobs:
+  upstream_updates:
+    docker:
+      - image: wades/boostid:0.0.1
+    working_directory: /app
     steps:
       - run:
           name: Install boostid globally
-          environment:
-            PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
-          command: npm install -g boostid
+          command: npm install -g wyattades/boostid
       - run:
-          name: "Create 'updates' multidev and run upstream updates"
+          name: "Run upstream updates on 'updates' multidev"
           command: boostid upstream-updates
-      - add_ssh_keys:
-          fingerprints:
-            - "2d:2a:a9:1a:d6:bb:cf:47:a2:7a:3d:cd:43:8b:c6:e6"
+      - coverage_tests
       - run:
-          name: "Push 'updates' branch to github"
-          command: ./node_modules/boostid/scripts/pantheon-to-github.sh
-            
+          name: "Merge 'updates' multidev to 'dev'"
+          command: boostid ter multidevMergeToDev updates
+          when: on_success
+      # - run:
+      #     name: "Push 'updates' branch to github"
+      #     command: ./node_modules/boostid/scripts/pantheon-to-github.sh updates
+      #     when: on_success
 
 workflows:
   version: 2.1
 
-  merge_upstream:
-    jobs:
-      - merge_upstream_job:
-          filters:
-            branches:
-              only:
-                - updates
-
   nightly:
     jobs:
-      - update_from_upstream
-    triggers:
-      - schedule:
-          cron: "0 0 * * *" # Every day at 12:00am UTC
+      - upstream_updates
+          # TEMP
           filters:
             branches:
-              only:
-                # It doesn't matter which branch, we are just running a command
-                # We always know that `master` exists though
-                - master
+              only: master
+
+    # triggers:
+    #   - schedule:
+    #       cron: "0 0 * * *" # Every day at 12:00am UTC
+    #       filters:
+    #         branches:
+    #           only:
+    #             - master
