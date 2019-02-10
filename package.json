@@ -4,12 +4,12 @@
     "test:dev-boostid": "boostid test --dev-boostid ~/Github/boostid"
   },
   "dependencies": {
-    "boostid": "git+https://github.com/wyattades/boostid.git",
+    "boostid": "github:wyattades/boostid",
     "jest": "^23.6.0",
     "jest-environment-puppeteer": "^3.9.0",
     "jest-image-snapshot": "^2.8.0",
     "jest-puppeteer": "^3.9.0",
-    "puppeteer": "^1.12.2"
+    "puppeteer": "1.12.2"
   },
   "private": true
 }
