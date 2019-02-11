@@ -24,12 +24,6 @@ jobs:
       - run:
           name: Install node modules
           command: npm install
-      - run:
-          name: DEBUG
-          command: |
-            echo "${BOOSTID_MACHINE_TOKEN}"
-            npx boostid config get
-            node -p "require('./package-lock.json').dependencies.boostid.version.split('#')[1]"
       - save_cache:
           key: node-v1-{{ .Branch }}-{{ checksum "package-lock.json" }}
           paths:
