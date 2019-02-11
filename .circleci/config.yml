@@ -9,6 +9,9 @@ jobs:
     steps:
       - add_ssh_keys
       - run:
+          name: Add Pantheon to known hosts (HACK)
+          command: ssh-keyscan -p 2222 -H codeserver.dev.${BOOSTID_ID}.drush.in >> ~/.ssh/known_hosts
+      - run:
           name: Checkout Pantheon repository
           command: |
             git clone ssh://codeserver.dev.${BOOSTID_ID}@codeserver.dev.${BOOSTID_ID}.drush.in:2222/~/repository.git .
