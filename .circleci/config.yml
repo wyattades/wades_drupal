@@ -13,8 +13,7 @@ jobs:
           command: ssh-keyscan -p 2222 -H codeserver.dev.${BOOSTID_ID}.drush.in >> ~/.ssh/known_hosts
       - run:
           name: Checkout Pantheon repository
-          command: |
-            git clone ssh://codeserver.dev.${BOOSTID_ID}@codeserver.dev.${BOOSTID_ID}.drush.in:2222/~/repository.git .
+          command: git clone ssh://codeserver.dev.${BOOSTID_ID}@codeserver.dev.${BOOSTID_ID}.drush.in:2222/~/repository.git .
       - restore_cache:
           keys:
             # when lock file changes, use increasingly general patterns to restore cache
@@ -25,6 +24,12 @@ jobs:
       - run:
           name: Install node modules
           command: npm install
+      - run:
+          name: DEBUG
+          command: |
+            boostid config get
+            echo "$BOOSTID_MACHINE_TOKEN"
+            echo "${BOOSTID_MACHINE_TOKEN}"
       - save_cache:
           key: node-v1-{{ .Branch }}-{{ checksum "package-lock.json" }}
           paths:
