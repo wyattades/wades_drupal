@@ -27,7 +27,7 @@ jobs:
       - run:
           name: DEBUG
           command: |
-            boostid config get
+            npx boostid config get
             echo "$BOOSTID_MACHINE_TOKEN"
             echo "${BOOSTID_MACHINE_TOKEN}"
       - save_cache:
