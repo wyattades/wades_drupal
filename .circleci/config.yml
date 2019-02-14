@@ -1,0 +1,64 @@
+version: 2.1
+
+
+jobs:
+  upstream_updates:
+    docker:
+      - image: wades/boostid:0.0.1
+    working_directory: /app
+    parameters:
+      local:
+        type: boolean
+        default: true
+    steps:
+      - add_ssh_keys
+      - when:
+          condition: <<parameters.local>>
+          steps:
+            - checkout
+      - unless:
+          condition: <<parameters.local>>
+          steps:
+            - run:
+                name: Checkout Pantheon repository
+                command: |
+                  ssh-keyscan -p 2222 -H codeserver.dev.${BOOSTID_ID}.drush.in >> ~/.ssh/known_hosts
+                  git clone ssh://codeserver.dev.${BOOSTID_ID}@codeserver.dev.${BOOSTID_ID}.drush.in:2222/~/repository.git .
+      - restore_cache:
+          keys:
+            # when lock file changes, use increasingly general patterns to restore cache
+            - node-v1-{{ .Branch }}-{{ checksum "package-lock.json" }}
+            # We can use these once boostid uses git tags or is an npm module
+            # - node-v1-{{ .Branch }}-
+            # - node-v1-
+      - run:
+          name: Install node modules
+          command: npm install
+      - save_cache:
+          key: node-v1-{{ .Branch }}-{{ checksum "package-lock.json" }}
+          paths:
+            - /app/node_modules
+      - run:
+          name: Run updates and coverage tests
+          command: ./node_modules/boostid/scripts/run-updates.js
+      - store_artifacts:
+          path: /tmp/boostid_test_results
+          destination: boostid_test_results
+
+
+workflows:
+  nightly:
+    jobs:
+      - upstream_updates:
+          local: false
+          filters:
+            branches:
+              only: master
+
+    # triggers:
+    #   - schedule:
+    #       cron: "0 0 * * *" # Every day at 12:00am UTC
+    #       filters:
+    #         branches:
+    #           only:
+    #             - master
