@@ -5,10 +5,10 @@
   },
   "dependencies": {
     "boostid": "github:wyattades/boostid",
-    "jest": "^23.6.0",
-    "jest-environment-puppeteer": "^3.9.0",
-    "jest-image-snapshot": "^2.8.0",
-    "jest-puppeteer": "^3.9.0",
+    "jest": "^24.1.0",
+    "jest-environment-puppeteer": "^4.0.0",
+    "jest-image-snapshot": "^2.8.1",
+    "jest-puppeteer": "^4.0.0",
     "puppeteer": "^1.12.2"
   },
   "private": true
