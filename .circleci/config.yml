@@ -4,7 +4,7 @@ version: 2.1
 jobs:
   upstream_updates:
     docker:
-      - image: wades/boostid:0.0.1
+      - image: circleci/node:10.15.0-browsers
     working_directory: /app
     parameters:
       local:
