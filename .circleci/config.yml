@@ -5,7 +5,7 @@ jobs:
   upstream_updates:
     docker:
       - image: circleci/node:10.15.0-browsers
-    working_directory: /app
+    working_directory: ~/app
     parameters:
       local:
         type: boolean
@@ -37,7 +37,7 @@ jobs:
       - save_cache:
           key: node-v1-{{ .Branch }}-{{ checksum "package-lock.json" }}
           paths:
-            - /app/node_modules
+            - ./node_modules
       - run:
           name: Run updates and coverage tests
           command: ./node_modules/boostid/scripts/run-updates.js
