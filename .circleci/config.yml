@@ -52,7 +52,8 @@ jobs:
           steps:
             - run:
                 name: Run coverage tests
-                command: ./node_modules/boostid/scripts/run-tests.sh || (node -e \\"require('./node_modules/boostid/lib/reporter')(true)\\"; false)
+                command: |
+                  ./node_modules/boostid/scripts/run-tests.sh || (node -e "require('./node_modules/boostid/lib/reporter')(true)"; false)
           path: /tmp/boostid_results_url
           destination: boostid_results_url
 
