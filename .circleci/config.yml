@@ -52,10 +52,9 @@ jobs:
           steps:
             - run:
                 name: Run coverage tests
-                command: ./node_modules/boostid/scripts/run-tests.sh
-      - store_artifacts:
-          path: /tmp/boostid_test_results
-          destination: boostid_test_results
+                command: ./node_modules/boostid/scripts/run-tests.sh || (node -e \\"require('./node_modules/boostid/lib/reporter')(true)\\"; false)
+          path: /tmp/boostid_results_url
+          destination: boostid_results_url
 
 
 workflows:
