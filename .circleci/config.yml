@@ -10,17 +10,17 @@ jobs:
       just_tests:
         type: boolean
         default: false
-      local:
+      use_checkout:
         type: boolean
         default: true
     steps:
       - add_ssh_keys
       - when:
-          condition: <<parameters.local>>
+          condition: <<parameters.use_checkout>>
           steps:
             - checkout
       - unless:
-          condition: <<parameters.local>>
+          condition: <<parameters.use_checkout>>
           steps:
             - run:
                 name: Checkout Pantheon repository
@@ -52,8 +52,12 @@ jobs:
           steps:
             - run:
                 name: Run coverage tests
-                command: |
-                  ./node_modules/boostid/scripts/run-tests.sh || (node -e "require('./node_modules/boostid/lib/reporter')(true)"; false)
+                command: ./node_modules/boostid/scripts/run-tests.sh
+            - run:
+                name: Reporter
+                command: node ./node_modules/boostid/lib/reporter.js failed
+                when: on_fail
+      - store_artifacts:
           path: /tmp/boostid_results_url
           destination: boostid_results_url
 
@@ -62,7 +66,7 @@ workflows:
   nightly:
     jobs:
       - upstream_updates:
-          local: false
+          use_checkout: false
           just_tests: true
           filters:
             branches:
