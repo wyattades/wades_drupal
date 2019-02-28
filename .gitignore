@@ -2,6 +2,7 @@
 node_modules/
 .env
 __image_snapshots__
+__boostid_results__
 
 # Ignore paths that contain user-generated content.
 sites/*/files
